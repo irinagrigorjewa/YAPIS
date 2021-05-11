@@ -1,0 +1,41 @@
+main
+func string get(int b,int c)
+            begin
+                print(b);
+                return b;
+            end
+func string get(int b,int c)
+            begin
+                print(b);
+                return b;
+            end
+func void set(int n)
+            begin
+                print(b);
+                return;
+            end
+    begin
+
+        string s1 = "cake";
+        string s2 = "phone";
+
+        string s3 = s1+s2;
+        print(s3);
+
+        string s5 = s1-s2;
+        print(s5);
+
+        s1.add(sd);
+        s1.remove(k);
+        for(s:a)
+                    begin
+                        print(s);
+                    end
+
+    int i=5;
+    i=9+2;
+    stringArray ar=[n,j,l];
+    string par = "oops";
+    string str = get(i);
+
+     end
