@@ -11,15 +11,13 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) throws Exception {
         String test = "src/main/resources/test_1.txt";
-        GrammarLexer lexer = new GrammarLexer(new ANTLRFileStream(test));//new ANTLRFileStream("test.txt"));
+        GrammarLexer lexer = new GrammarLexer(new ANTLRFileStream(test));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        GrammarParser parser = new ParserString(tokens);//new CommonTokenStream(lexer)
+        GrammarParser parser = new GrammarParser(tokens);
         ParseTree tree = parser.program();
         Visitor visitor = new Visitor();
         visitor.visit(tree);
-//        FileWriter fileWriter = new FileWriter("Program.java");
-//        fileWriter.write(out);
-//        fileWriter.close();
+        visitor.file();
         System.out.println("OK");
 
     }
