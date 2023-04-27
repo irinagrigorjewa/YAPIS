@@ -20,16 +20,22 @@ public class Visitor extends GrammarBaseVisitor<Node> {
     @Override
     public Node visitProgram(GrammarParser.ProgramContext ctx) {
 
-        prog.append(" public class Main { \n");
+        prog.append(" public class Main { \n public static void main(String[] args) \n");
         GrammarParser.BlockContext sctx = ctx.block();
         ProgramNode programNode = new ProgramNode();
         programNode.statementNodes = visitBlock(sctx).statements;
         if (ctx.subprogram_return() != null) {
-
             programNode.subprogramNodes = ctx.subprogram_return()
                     .stream()
                     .map(this::visitSubprogram_return)
                     .collect(Collectors.toList());
+        }
+        if (ctx.subprogram_non_return() != null) {
+            programNode.subprogramNonNodes = ctx.subprogram_non_return()
+                    .stream()
+                    .map(this::visitSubprogram_non_return)
+                    .collect(Collectors.toList());
+//            prog.append("}fdsfsdfs");
         }
         prog.append("}");
 //
@@ -42,7 +48,7 @@ public class Visitor extends GrammarBaseVisitor<Node> {
 
         BlockNode blockNode = new BlockNode();
 
-        prog.append(" { \n");
+        prog.append("{ \n");
         blockNode.statements = ctx.statement()
                 .stream()
                 .map(this::visitStatement)
@@ -125,7 +131,7 @@ public class Visitor extends GrammarBaseVisitor<Node> {
     public InitializeCharNode visitIntialize_char(GrammarParser.Intialize_charContext ctx) {
         InitializeCharNode initializeCharNode = new InitializeCharNode();
         initializeCharNode.symbol = ctx.SYMBOL().getText();
-        prog.append(initializeCharNode.symbol + "; ");
+        prog.append(initializeCharNode.symbol + "%; ");
         return initializeCharNode;
     }
 
@@ -133,6 +139,7 @@ public class Visitor extends GrammarBaseVisitor<Node> {
     public InitializeStringNode visitInitialize_string(GrammarParser.Initialize_stringContext ctx) {
         InitializeStringNode initializeStringNode = new InitializeStringNode();
         if (ctx.LINE() != null) {
+            //инициализация строк
             initializeStringNode.string = ctx.LINE().getText();
             prog.append(initializeStringNode.string + ";\n");
         } else {
@@ -363,7 +370,7 @@ public class Visitor extends GrammarBaseVisitor<Node> {
         if (ctx.block() == null) throw new WrongExpressionException("Wrong!!!!!!!!!!!!!!!!!");
         forEachNode.fromParam = ctx.ID(0).getText();
         forEachNode.toParam = ctx.ID(1).getText();
-        prog.append("for(" + forEachNode.fromParam + ":" + forEachNode.toParam + ")");
+        prog.append("for(char " + forEachNode.fromParam + ":" + forEachNode.toParam + ".toCharArray())");
         forEachNode.block = visitBlock(ctx.block());
         return forEachNode;
     }
@@ -384,7 +391,9 @@ public class Visitor extends GrammarBaseVisitor<Node> {
         } else if (ctx.STRING_ARRAY() != null) {
             typeNode.type = ctx.STRING_ARRAY().getText();
             prog.append(" String[] ");
-        } else {
+        }
+
+        else {
             throw new FunctionException("Wrong type!");
         }
         return typeNode;
@@ -420,12 +429,13 @@ public class Visitor extends GrammarBaseVisitor<Node> {
         return signatureNode;
 
     }
-
+//method string
     @Override
     public SubprogramReturnNode visitSubprogram_return(GrammarParser.Subprogram_returnContext ctx) {
 
         SubprogramReturnNode subprogramReturnNode = new SubprogramReturnNode();
         prog.append(" public ");
+
         if (ctx.type() == null) {
             System.out.println("Nooooooooo");
         } else {
@@ -438,16 +448,19 @@ public class Visitor extends GrammarBaseVisitor<Node> {
             subprogramReturnNode.signature = visitSignature(ctx.signature());
         }
         prog.append(")");
+//        тело метода
         subprogramReturnNode.block = visitBlock_return(ctx.block_return());
-        prog.append("; \n");
+//        prog.append("; \n");
         return subprogramReturnNode;
 
     }
 
     @Override
     public SubprogramNonReturnNode visitSubprogram_non_return(GrammarParser.Subprogram_non_returnContext ctx) {
+
         SubprogramNonReturnNode subprogramNonReturnNode = new SubprogramNonReturnNode();
-        prog.append(" public ");
+        prog.append(" public static ");
+
         subprogramNonReturnNode.id = ctx.ID().getText();
 
         if (ctx.VOID() == null) {
@@ -456,15 +469,20 @@ public class Visitor extends GrammarBaseVisitor<Node> {
         } else
             subprogramNonReturnNode.voidNode = ctx.VOID().getText();
         prog.append(subprogramNonReturnNode.voidNode + " " + subprogramNonReturnNode.id);
+
+        prog.append("(");
+        if (ctx.signature() != null) {
+            subprogramNonReturnNode.signature = visitSignature(ctx.signature());
+        }
+        prog.append(")");
+
         if (ctx.block_non_return() != null) {
             subprogramNonReturnNode.block = visitBlock_non_return(ctx.block_non_return());
         } else
             subprogramNonReturnNode.block = visitBlock(ctx.block());
-        if (ctx.signature() != null) {
-            subprogramNonReturnNode.signature = visitSignature(ctx.signature());
-        }
-        prog.append(";\n");
+//        prog.append(";\n");
         return subprogramNonReturnNode;
+
     }
 
 
@@ -477,7 +495,7 @@ public class Visitor extends GrammarBaseVisitor<Node> {
                 .stream()
                 .map(this::visitStatement)
                 .collect(Collectors.toList());
-        prog.append(" return " + blockNode.return_id);
+        prog.append("return " + blockNode.return_id + ";");
         prog.append(" }\n");
         return blockNode;
     }
@@ -523,7 +541,7 @@ public class Visitor extends GrammarBaseVisitor<Node> {
 
 
     public void file() {
-        try (FileWriter file = new FileWriter("Program.java")) {
+        try (FileWriter file = new FileWriter("Main.java")) {
             file.write(prog.toString());
         } catch (IOException e) {
             e.printStackTrace();

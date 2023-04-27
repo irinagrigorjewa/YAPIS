@@ -108,7 +108,7 @@ expression:	expression (MULTIPLY|AND) expression
     simple_type: INT|CHAR;
     signature: (O_BRACKET (type ID ',')* (type ID) C_BRACKET);
     subprogram_return : 'func' type ID (signature|(O_BRACKET C_BRACKET)) block_return;
-    subprogram_non_return : 'func' VOID ID (signature|(O_BRACKET C_BRACKET)) (block_non_return|block);
+    subprogram_non_return : VOID ID (signature|(O_BRACKET C_BRACKET)) (block_non_return|block);
 
     block_return : BEGIN statement* RETURN ID DOT_COMMA END;
     block_non_return : BEGIN statement* RETURN DOT_COMMA END;

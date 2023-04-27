@@ -18,7 +18,7 @@ public class Main {
         Visitor visitor = new Visitor();
         visitor.visit(tree);
         visitor.file();
-        System.out.println("OK");
+        System.out.println("\nOK");
 
     }
 

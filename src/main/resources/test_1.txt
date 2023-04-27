@@ -1,10 +1,8 @@
 main
-func string get(int b)
+func void get()
             begin
-                print(b);
-                return b;
+                print("Hello World");
             end
-
     begin
 
         string s1 = "cake";
@@ -13,19 +11,11 @@ func string get(int b)
         string s3 = s1+s2;
         print(s3);
 
-        string s5 = s1-s2;
-        print(s5);
-
-        s1.add(sd);
-        s1.remove(k);
         for(s:a)
                     begin
                         print(s);
                     end
 
-    int i=9+2;
-    stringArray ar=[n,j,l];
-    string par = "oops";
-    string str = get(i);
+    get();
 
      end
